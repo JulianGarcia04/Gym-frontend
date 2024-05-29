@@ -2,10 +2,10 @@
   <q-layout view="hHh lpR fFf">
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
+        <q-btn dense flat round icon="menu" color="white" style="font-size: 25px;" @click="toggleLeftDrawer" />
 
-        <q-toolbar-title>
-        GYMNASIO
+        <q-toolbar-title class="title" style="font-size: 55px; font-family: 'Times New Roman'; font-weight: bold; text-align: center;">
+          TitanFit Gym
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
@@ -17,26 +17,27 @@
       bordered
     >
       <div class="drawer-menu">
-        <router-link to="/" class="drawer-link">Login</router-link>
-        <router-link to="/Usuarios" class="drawer-link">Usuarios</router-link>
-        <router-link to="/Clientes" class="drawer-link">Clientes</router-link>
-        <router-link to="/Sedes" class="drawer-link">Sedes</router-link>
-        <router-link to="/Planes" class="drawer-link">Planes</router-link>
-        <router-link to="/Inventario" class="drawer-link">Inventario</router-link>
-        <router-link to="/Maquinas" class="drawer-link">Maquinas</router-link>
-        <router-link to="/Mantenimiento" class="drawer-link">Mantenimientos</router-link>
-        <router-link to="/Ingresos" class="drawer-link">Ingresos</router-link>
-        <router-link to="/Pagos" class="drawer-link">Pagos</router-link>
-        <router-link to="/Ventas" class="drawer-link">Ventas</router-link>
+        <router-link to="/" class="drawer-link">🔒<span class="icon">Inicio de Sesión</span></router-link>
+        <router-link to="/Home" class="drawer-link">🏠<span class="icon">Home</span></router-link>
+        <router-link to="/Usuarios" class="drawer-link">👤<span class="icon">Usuarios</span></router-link>
+        <router-link to="/Clientes" class="drawer-link">👥<span class="icon">Clientes</span></router-link>
+        <router-link to="/Sedes" class="drawer-link">🏢<span class="icon">Sedes</span></router-link>
+        <router-link to="/Planes" class="drawer-link">📝<span class="icon">Planes</span></router-link>
+        <router-link to="/Inventario" class="drawer-link">📦<span class="icon">Inventario</span></router-link>
+        <router-link to="/Maquinas" class="drawer-link">⚙️<span class="icon">Máquinas</span></router-link>
+        <router-link to="/Mantenimiento" class="drawer-link">🔧<span class="icon">Mantenimientos</span></router-link>
+        <router-link to="/Ingresos" class="drawer-link">💰<span class="icon">Ingresos</span></router-link>
+        <router-link to="/Pagos" class="drawer-link">💳<span class="icon">Pagos</span></router-link>
+        <router-link to="/Ventas" class="drawer-link">🛒<span class="icon">Ventas</span></router-link>
       </div>
     </q-drawer>
     <q-page-container>
       <router-view></router-view>
     </q-page-container>
-    <q-footer elevated class="bg-grey-8 text-white">
+    <q-footer style="background-color: #BD9727; color: white; text-align: center; font-family: 'Times New Roman';">
       <q-toolbar>
         <q-toolbar-title>
-          <div>© Copyright 2024 - Todos los derechos reservados.</div>
+          <div>© Derechos de autor 2024 - Todos los derechos reservados.</div>
         </q-toolbar-title>
       </q-toolbar>
     </q-footer>
@@ -62,21 +63,38 @@ export default {
 
 <style scoped>
 .drawer-menu {
-  padding: 20px;
-  background-color: yellow;
+  padding: 20px 0;
+  background-color: #977233;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .drawer-link {
-  display: block;
-  color: #333;
-  font-size: 25px;
-  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  color: white;
+  font-size: 48px;
+  margin-bottom: 5px;
+  text-decoration: none;
+}
+
+.icon {
+  margin-left: 10px;
+  font-size: 30px;
+  font-family: 'Times New Roman';
 }
 
 .drawer-link:hover {
-  color: #007bff;
-
+  color: #eee;
 }
 
+.title {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+q-toolbar-title {
+  background-color: goldenrod;
+}
 </style>

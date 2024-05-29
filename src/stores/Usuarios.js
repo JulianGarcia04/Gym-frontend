@@ -1,11 +1,13 @@
 import { defineStore } from "pinia";
-import axiosInstance from "../utils/axiosInstance";
+import axios from "axios"
 import { ref } from "vue";
 
 export const useUsuariosStore = defineStore("usuarios", () => {
+  let token = ref("");
+  let user = ref({})
   const getUsuarios = async () => {
     try {
-      const res = await axiosInstance.get("/usuarios/listar");
+      const res = await axios.get("http://localhost:4000/api/usuarios/listar");
       return res;
     } catch (error) {
       console.error("Error fetching usuarios:", error);
@@ -13,6 +15,80 @@ export const useUsuariosStore = defineStore("usuarios", () => {
     }
   };
 
-  return { getUsuarios };
+  const getUsuariosID = async (id) => {
+    try {
+      const res = await axios.get(`http://localhost:4000/api/usuarios/listarid/${id}`);
+      return res;
+    } catch (error) {
+      console.error("Error fetching usuario by ID:", error);
+      return error;
+    }
+  };
+  
+  const updateUsuario = async (id, data) => {
+    try {
+      const res = await axios.put(`http://localhost:4000/api/usuarios/modificar/${id}`, data);
+      return res;
+    } catch (error) {
+      console.error("Error updating usuario:", error);
+      return error;
+    }
+  };
+
+  const addUsuario = async (data) => {
+    try {
+      const res = await axios.post("http://localhost:4000/api/usuarios/escribir", data);
+      return res;
+    } catch (error) {
+      console.error("Error adding usuario:", error);
+      return error;
+    }
+  };
+
+  const activateUsuario = async (id) => {
+    try {
+      const res = await axios.put(`http://localhost:4000/api/usuarios/activar/activos/${id}`);
+      return res;
+    } catch (error) {
+      console.error("Error activating usuario:", error);
+      return error;
+    }
+  };
+
+  const deactivateUsuario = async (id) => {
+    try {
+      const res = await axios.put(`http://localhost:4000/api/usuarios/desactivar/desactivados/${id}`);
+      return res;
+    } catch (error) {
+      console.error("Error deactivating usuario:", error);
+      return error;
+    }
+  };
+
+
+
+
+  const login = async (email, password) => {
+    try {
+      const res = await axios.post("http://localhost:4000/api/usuarios/login", {
+        email,
+        password,
+      });
+      token.value = res.data.token;
+      user.value = res.data.user 
+      console.log(token.value);
+      console.log(res.data);
+      return res.data;
+    } catch (error) {
+      console.error("Error during login:", error);
+      throw error;
+    }
+  };
+
+  return { getUsuarios, updateUsuario, addUsuario, activateUsuario, deactivateUsuario, login, token, user, getUsuariosID};
+}, {
+  persist: true
 });
+
+
 

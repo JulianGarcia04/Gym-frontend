@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import axiosInstance from "../utils/axiosInstance";
 import { ref } from "vue";
 
 export const useClientesStore = defineStore("clientes", () => {

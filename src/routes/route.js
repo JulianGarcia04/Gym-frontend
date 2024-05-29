@@ -9,12 +9,14 @@ import Planes from "../components/Planes.vue";
 import Sedes from "../components/Sedes.vue";
 import Usuarios from "../components/Usuarios.vue";
 import Ventas from "../components/Ventas.vue";
+import Home from "../components/Home.vue"
 
 import { createRouter, createWebHashHistory } from "vue-router";
 
 // Rutas definidas
 const routes = [
   { path: "/", component: Login },
+  { path: "/Home", component: Home, meta: { requiresAuth: true } },
   { path: "/Ingresos", component: Ingresos, meta: { requiresAuth: true } },
   { path: "/Clientes", component: Clientes, meta: { requiresAuth: true } },
   { path: "/Inventario", component: Inventario, meta: { requiresAuth: true } },
