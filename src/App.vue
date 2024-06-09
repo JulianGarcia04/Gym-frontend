@@ -68,6 +68,7 @@ export default {
   height: 100vh;
   display: flex;
   flex-direction: column;
+
 }
 
 .drawer-link {
@@ -77,6 +78,7 @@ export default {
   font-size: 48px;
   margin-bottom: 5px;
   text-decoration: none;
+  color: black;
 }
 
 .icon {

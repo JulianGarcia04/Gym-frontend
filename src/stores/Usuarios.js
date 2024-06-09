@@ -7,7 +7,7 @@ export const useUsuariosStore = defineStore("usuarios", () => {
   let user = ref({})
   const getUsuarios = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/usuarios/listar");
+      const res = await axios.get("http://localhost:4500/api/usuarios/listar");
       return res;
     } catch (error) {
       console.error("Error fetching usuarios:", error);
@@ -17,7 +17,7 @@ export const useUsuariosStore = defineStore("usuarios", () => {
 
   const getUsuariosID = async (id) => {
     try {
-      const res = await axios.get(`http://localhost:4000/api/usuarios/listarid/${id}`);
+      const res = await axios.get(`http://localhost:4500/api/usuarios/listarid/${id}`);
       return res;
     } catch (error) {
       console.error("Error fetching usuario by ID:", error);
@@ -27,7 +27,7 @@ export const useUsuariosStore = defineStore("usuarios", () => {
   
   const updateUsuario = async (id, data) => {
     try {
-      const res = await axios.put(`http://localhost:4000/api/usuarios/modificar/${id}`, data);
+      const res = await axios.put(`http://localhost:4500/api/usuarios/modificar/${id}`, data);
       return res;
     } catch (error) {
       console.error("Error updating usuario:", error);
@@ -37,7 +37,7 @@ export const useUsuariosStore = defineStore("usuarios", () => {
 
   const addUsuario = async (data) => {
     try {
-      const res = await axios.post("http://localhost:4000/api/usuarios/escribir", data);
+      const res = await axios.post("http://localhost:4500/api/usuarios/escribir", data);
       return res;
     } catch (error) {
       console.error("Error adding usuario:", error);
@@ -47,7 +47,7 @@ export const useUsuariosStore = defineStore("usuarios", () => {
 
   const activateUsuario = async (id) => {
     try {
-      const res = await axios.put(`http://localhost:4000/api/usuarios/activar/activos/${id}`);
+      const res = await axios.put(`http://localhost:4500/api/usuarios/activar/activos/${id}`);
       return res;
     } catch (error) {
       console.error("Error activating usuario:", error);
@@ -57,7 +57,7 @@ export const useUsuariosStore = defineStore("usuarios", () => {
 
   const deactivateUsuario = async (id) => {
     try {
-      const res = await axios.put(`http://localhost:4000/api/usuarios/desactivar/desactivados/${id}`);
+      const res = await axios.put(`http://localhost:4500/api/usuarios/desactivar/desactivados/${id}`);
       return res;
     } catch (error) {
       console.error("Error deactivating usuario:", error);
@@ -65,12 +65,31 @@ export const useUsuariosStore = defineStore("usuarios", () => {
     }
   };
 
-
-
-
+const listarActivos = async () => {
+  console.log(token.value);
+  try {
+    const res = await axios.get("http://localhost:4500/api/usuarios/listaractivados", {
+      headers: {
+        token:token.value}
+    });
+    return res;
+  } catch (error) {
+    console.error("Error fetching usuarios:", error);
+    return error;
+  }
+};
+const listarInactivos = async () => {
+  try {
+    const res = await axios.get("http://localhost:4500/api/usuarios/listardesactivados");
+    return res;
+  } catch (error) {
+    console.error("Error fetching usuarios:", error);
+    return error;
+  }
+};
   const login = async (email, password) => {
     try {
-      const res = await axios.post("http://localhost:4000/api/usuarios/login", {
+      const res = await axios.post("http://localhost:4500/api/usuarios/login", {
         email,
         password,
       });
@@ -85,7 +104,7 @@ export const useUsuariosStore = defineStore("usuarios", () => {
     }
   };
 
-  return { getUsuarios, updateUsuario, addUsuario, activateUsuario, deactivateUsuario, login, token, user, getUsuariosID};
+  return { getUsuarios, updateUsuario, addUsuario, activateUsuario, deactivateUsuario, login, token, user, getUsuariosID, listarActivos, listarInactivos};
 }, {
   persist: true
 });

@@ -1,18 +1,44 @@
 import {defineStore} from "pinia"
 import axios from "axios"
 import {ref} from "vue"
+import { useUsuariosStore } from "../stores/Usuarios";
 
 export const useIngresosStore = defineStore("ingresos", ()=>{
 
-    
+  const useUsuarios = useUsuariosStore();
+
     const getIngresos = async()=>{
         try {
-            const res = await axios.get("http://localhost:4000/api/ingresos/listar")
+            const res = await axios.get("http://localhost:4500/api/ingresos/listar",{
+              headers:{
+                "x-token":useUsuarios.token
+              },
+            });
             return res
         } catch (error) {
             return error
         }
-    }
+    };
+    const addIngreso = async (data) => {
+        try {
+          const res = await axios.post("http://localhost:4500/api/ingresos/escribir", data);
+          return res;
+        } catch (error) {
+          console.error("Error adding ingreso:", error);
+          return error;
+        }
+      };
 
-    return{ getIngresos}
+      const updateIngreso = async (data) => {
+        try {
+          const res = await axios.post(`http://localhost:4500/api/ingresos/modificar/${id}`, data);
+          return res;
+        } catch (error) {
+          console.error("Error adding ingreso:", error);
+          return error;
+        }
+      };
+
+
+    return{ getIngresos, addIngreso,updateIngreso}
 })

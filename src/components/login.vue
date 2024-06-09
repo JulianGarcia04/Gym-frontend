@@ -26,8 +26,8 @@ import { useRouter } from "vue-router";
 
 export default {
   setup() {
-    const email = ref('giselle@gmail.com');
-    const password = ref('999contraseña');
+    const email = ref('gisel@gmail.com');
+    const password = ref('Gisel12345$');
     const router = useRouter();
     const usuariosStore = useUsuariosStore();
 
