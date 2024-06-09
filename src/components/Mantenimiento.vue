@@ -116,6 +116,7 @@ async function listarMantenimiento(MantenimientoId = null) {
       r = await useMantenimiento.getMantenimiento();
       if (r && r.data) {
         rows.value = r.data.mantenimiento;
+        console.log(rows.value);
       } else {
         console.error('Error fetching Mantenimiento:', r);
       }

@@ -14,11 +14,21 @@ export const useIngresosStore = defineStore("ingresos", ()=>{
                 "x-token":useUsuarios.token
               },
             });
-            return res
+            return res.data
         } catch (error) {
             return error
         }
     };
+    const getIngresoID = async (id) => {
+      try {
+        const res = await axios.get("http://localhost:4500/api/ingresos/listarid/${id}");
+        return res;
+      } catch (error) {
+        console.error("Error fetching mantenimiento by ID:", error);
+        return error;
+      }
+    };
+
     const addIngreso = async (data) => {
         try {
           const res = await axios.post("http://localhost:4500/api/ingresos/escribir", data);
@@ -40,5 +50,5 @@ export const useIngresosStore = defineStore("ingresos", ()=>{
       };
 
 
-    return{ getIngresos, addIngreso,updateIngreso}
+    return{ getIngresos, addIngreso,updateIngreso, getIngresoID}
 })

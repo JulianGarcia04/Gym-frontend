@@ -51,11 +51,21 @@
           <q-form @submit.prevent="guardarEdicion">
             <q-input v-model="form.nombre" label="Nombre" required />
             <q-input v-model="form.telefono" label="Teléfono" required />
-            <q-input v-model="form.rol" label="Rol" required />
+            <label for="">Rol</label>
+            <select required v-model="form.rol">
+              <option value="administrador">Administrador</option>
+              <option value="instructor">Instructor</option>
+              <option value="recepcionista">Recepcionista</option>
+            </select>
             <q-input v-model="form.email" label="Email" required />
             <q-input v-model="form.password" label="Password" required />
-            <q-input v-model="form.idSede" label="Sede" required />
-
+            <label for="">sedes</label>
+            <select required v-model="form.idSede">
+              <option value="" disabled selected hidden></option>
+              <option v-for="(sede, index) in sedes" :key="sede.id" :value="index+1">
+                {{sede.nombre}}
+              </option>
+            </select>
             <q-card-actions align="right">
               <q-btn flat label="Cancelar" color="negative" @click="cerrarDialogo" />
               <q-btn type="submit" label="Guardar" color="positive" />
@@ -70,9 +80,12 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useUsuariosStore } from "../stores/Usuarios";
+import { useSedesStore } from "../stores/Sedes.js"
 
 const useUsuarios = useUsuariosStore();
+const useSede = useSedesStore()
 const usuarioId = ref("");
+let sedes = ref([])
 
 const rows = ref([]);
 const columns = ref([
@@ -87,10 +100,12 @@ const columns = ref([
   { name: "opciones", label: "Opciones", field: "opciones", align: "center" },
 ]);
 
+let sede = ("")
+
 const isDialogOpen = ref(false);
 const esNuevoUsuario = ref(false);
 const form = ref({
-  idSede: null,
+  idSede: sede,
   nombre: "",
   email: "",
   telefono: "",
@@ -149,7 +164,10 @@ function editar(row) {
   isDialogOpen.value = true;
 }
 
-function abrirDialogoNuevoUsuario() {
+async function abrirDialogoNuevoUsuario() {
+  await useSede.getSedes()
+  sedes.value = useSede.sedes
+  console.log(sedes.value);
   form.value = {
     nombre: "",
     telefono: "",
@@ -166,6 +184,9 @@ function abrirDialogoNuevoUsuario() {
 async function guardarEdicion() {
   try {
     if (esNuevoUsuario.value) {
+      sede = sedes.value[form.value.idSede - 1]
+      form.value.idSede= sede._id
+      console.log(form.value.idSede);
       await useUsuarios.addUsuario(form.value);
     } else {
       await useUsuarios.updateUsuario(form.value._id, form.value);

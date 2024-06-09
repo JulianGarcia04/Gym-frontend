@@ -9,7 +9,7 @@ export const usePagosStore = defineStore('pagos', () => {
     try {
       const res = await axios.get('http://localhost:4500/api/pagos/listar');
       pagos.value = res.data;
-      return res;
+      return res.data;
     } catch (error) {
       console.error('Error fetching pagos:', error);
       throw error;

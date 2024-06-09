@@ -23,6 +23,7 @@
 import { ref } from "vue";
 import { useUsuariosStore } from "../stores/Usuarios";
 import { useRouter } from "vue-router";
+const router = useRouter()
 
 export default {
   setup() {
@@ -37,7 +38,7 @@ export default {
         console.log('Contraseña:', password.value);
         const response = await usuariosStore.login(email.value, password.value);
         console.log("Login successful:", response);
-        router.push("/Home"); 
+        router.push("/Menu"); 
       } catch (error) {
         console.error("Error al iniciar sesión:", error);
         alert("Correo o contraseña incorrectos.");
@@ -57,7 +58,7 @@ export default {
 
 .contenedor{
   font-family: Arial, sans-serif;
-  background-color: black;
+  background-color: rgb(0, 0, 0);
   display: flex;
   justify-content: center;
   align-items: center;

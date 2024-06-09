@@ -6,7 +6,7 @@ export const useClientesStore = defineStore("clientes", () => {
   const getClientes = async () => {
     try {
       const res = await axios.get("http://localhost:4500/api/clientes/listar");
-      return res;
+      return res.data;
     } catch (error) {
       console.error("Error fetching clientes:", error);
       return error;

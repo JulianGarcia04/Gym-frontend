@@ -101,11 +101,10 @@ const columns = ref([
   { name: "nombre", label: "Nombre", field: "nombre", align: "center" },
   { name: "documento", label: "Documento", field: "documento", align: "center" },
   { name: "direccion", label: "Direccion", field: "direccion", align: "center" },
-  { name: "fechaNacimiento", label: "fecha de Nacimiento", field: "fechaNacimiento", align: "center" },
+  { name: "fechaNacimiento", label: "fecha de Nacimiento", field: (row)=> row.fechaNacimiento.split("T")[0], align: "center" },
   { name: "telefono", label: "Telefono", field: "telefono", align: "center" },
   { name: "estado", label: "Estado", field: "estado", align: "center" },
   { name: "idPlan", label: "Plan", field: (row)=>row.idPlan.descripcion, align: "center" },
-  { name: "fechavencimiento", label: "fecha de vencimiento", field: "fechavencimiento", align: "center" },
   { name: "foto", label: "foto", field: "foto", align: "center" },
   { name: "editar", label: "Editar", field: "editar", align: "center" },
   { name: "opciones", label: "Opciones", field: "opciones", align: "center" },
@@ -137,11 +136,8 @@ async function listarClientes(clienteId = null) {
       }
     } else {
       r = await useClientes.getClientes();
-      if (r && r.data) {
-        rows.value = r.data.cliente;
-      } else {
-        console.error('Error fetching clientes:', r);
-      }
+      console.log(r);
+      rows.value = r.cliente
     }
   } catch (error) {
     console.error('Error fetching clientes:', error);

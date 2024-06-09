@@ -1,73 +1,3 @@
-<!-- <template>
-  <div class="contenedor">
-
-
-<div class="busqueda">
-  <q-input class="input" v-model="pagoId" label="Buscar por ID" />
-  <q-btn class="boton_buscar" color="primary" @click="buscarPago">Buscar</q-btn>
-  <div class="listar-ai">
-    <button class="activar" color="primary" @click="listarActivos">Activos</button>
-    <button class="inactivar" color="primary" @click="listarInactivos">Inactivos</button>
-    <button class="todos" color="primary" @click="listarPagos()">Todos</button>
-  </div>
-</div>
-<div class="boton_agregar">
-  <q-btn class="boton_agregar" color="primary" @click="abrirDialogoNuevoPago">
-    <q-icon name="add" /> Nuevo Pago
-  </q-btn>
-</div>
-
-      <div class="q-pa-md">
-        <q-table title="Pagos" :rows="rows" :columns="columns" row-key="name" style="width: 100%;"> 
-          
-          <template v-slot:body-cell-estado="props">
-          <q-td :props="props">
-            <q-chip :color="props.row.estado === 1 ? 'green' : 'red'" text-color="white" >
-              {{ props.row.estado === 1 ? 'Activo' : 'Inactivo' }}
-            </q-chip>
-          </q-td>
-        </template>
-          
-          <template v-slot:body-cell-editar="props">
-            <q-td :props="props">
-              <q-btn @click="editar()">
-                🖋️
-              </q-btn>
-            </q-td>
-          </template>
-          <template v-slot:body-cell-opciones="props">
-          <q-td :props="props">
-            <q-btn v-if="props.row.estado == 1" @click="desactivar(props.row)">❌</q-btn>
-
-            <q-btn v-else @click="activar(props.row)">✅</q-btn>
-          </q-td>
-        </template>
-        </q-table>
-      </div>
-      
-      <q-dialog v-model="isDialogOpen">
-      <q-card>
-        <q-card-section>
-          <div class="text-h6">{{ esNuevoPlan ? 'Agregar Pago' : 'Editar Pago' }}</div>
-        </q-card-section>
-
-        <q-card-section>
-          <q-form @submit.prevent="guardarEdicion">
-            <q-input v-model="form.id" label="Id Cliente" required />
-            <q-input v-model="form.plan" label="Plan" required />
-            <q-input v-model="form.valor" label="Valor" required />
-
-            <q-card-actions align="right">
-              <q-btn flat label="Cancelar" color="negative" @click="cerrarDialogo" />
-              <q-btn type="submit" label="Guardar" color="positive" />
-            </q-card-actions>
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-  </div>
-
-</template> -->
 
 <template>
   <div class="contenedor">
@@ -136,15 +66,22 @@
 <script setup>
 import { ref, onMounted } from "vue"
 import {usePagosStore} from "../stores/Pagos"
+import {useClientesStore} from "../stores/Clientes.js"
 
 const usePagos= usePagosStore()
+const useClientes = useClientesStore()
 const PagosId = ref("")
+
+let c = ref([])
 
 const rows = ref([])
 const columns = ref([
-{name:"cliente", label: "Cliente", field: (row) => row.idCliente.nombre, align: "center" },
-{name:"plan", label:"Plan", field: (row) => row.IdPlan.descripcion, align: "center" },
-{name:"valor", label:"Valor", field: (row) => row.IdPlan.valor, align: "center" },
+{name:"cliente", label: "Cliente", field: (row) => {
+  const cliente = c.value.find((cliente) => cliente._id == row.idCliente)
+  console.log(c.value);
+}, align: "center" },
+{name:"plan", label:"Plan", field: "IdPlan", align: "center" },
+{name:"valor", label:"Valor", field: (row) => row.valor, align: "center" },
 {name:"fecha", label:"Fecha", field:"fecha", align: "center"},
 {name:"estado", label: "Estado", field: "estado", align: "center" },
 {name:"editar", label: "Editar", field: "editar", align: "center" },
@@ -174,11 +111,10 @@ async function listarPagos(pagoId = null) {
       }
     } else {
       r = await usePagos.getPagos();
-      if (r && r.data) {
-        rows.value = r.data.pago;
-      } else {
-        console.error("Error fetching pagos:", r);
-      }
+      let c1 = await useClientes.getClientes()
+      c.value = c1.cliente
+      console.log(r.pago);
+      rows.value = r.pago
     }
   } catch (error) {
     console.error("Error fetching pagos:", error);

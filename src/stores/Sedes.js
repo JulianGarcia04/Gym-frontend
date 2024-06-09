@@ -6,9 +6,11 @@ import { ref } from "vue";
 
 
 export const useSedesStore = defineStore("sedes", () => {
+  let sedes = ref(null)
   const getSedes = async () => {
     try {
       const res = await axios.get("http://localhost:4500/api/sedes/listar");
+      sedes.value = res.data.sede
       return res;
     } catch (error) {
       console.error("Error fetching sedes:", error);
@@ -85,6 +87,6 @@ export const useSedesStore = defineStore("sedes", () => {
     }
   };
 
-  return { getSedes,getSedeID,listaractivos,listarInactivos, updateSede, addSede, activateSede, deactivateSede };
+  return { getSedes,getSedeID,listaractivos,listarInactivos, updateSede, addSede, activateSede, deactivateSede, sedes };
 });
 
