@@ -1,3 +1,7 @@
+import { createRouter, createWebHashHistory } from "vue-router";
+
+import { useUsuariosStore } from '../stores/Usuarios';
+
 import Login from "../components/login.vue";
 import Ingresos from "../components/Ingresos.vue";
 import Clientes from "../components/Clientes.vue";
@@ -11,44 +15,44 @@ import Usuarios from "../components/Usuarios.vue";
 import Ventas from "../components/Ventas.vue";
 import Home from "../components/Home.vue"
 import Menu from "../components/Menu.vue"
+import Recuperarpass from "../components/Recuperarpass.vue";
 
-import { createRouter, createWebHashHistory } from "vue-router";
 
-// Rutas definidas
+
 const routes = [
   { path: "/", component: Login },
-  {
+  { path: "/Recuperarpass", component: Recuperarpass},  {
     path: "/Menu", component: Menu, meta: { requiresAuth: true }, children: [
-      { path: "/Home", component: Home, meta: { requiresAuth: true } },
-      { path: "/Ingresos", component: Ingresos, meta: { requiresAuth: true } },
-      { path: "/Clientes", component: Clientes, meta: { requiresAuth: true } },
-      { path: "/Inventario", component: Inventario, meta: { requiresAuth: true } },
-      { path: "/Mantenimiento", component: Mantenimiento, meta: { requiresAuth: true } },
-      { path: "/Maquinas", component: Maquinas, meta: { requiresAuth: true } },
-      { path: "/Pagos", component: Pagos, meta: { requiresAuth: true } },
-      { path: "/Planes", component: Planes, meta: { requiresAuth: true } },
-      { path: "/Sedes", component: Sedes, meta: { requiresAuth: true } },
-      { path: "/Usuarios", component: Usuarios, meta: { requiresAuth: true } },
-      { path: "/Ventas", component: Ventas, meta: { requiresAuth: true } },
+      { path: "/home", component: Home, meta: { requiresAuth: true } },
+      { path: "/ingresos", component: Ingresos, meta: { requiresAuth: true } },
+      { path: "/clientes", component: Clientes, meta: { requiresAuth: true } },
+      { path: "/inventario", component: Inventario, meta: { requiresAuth: true } },
+      { path: "/mantenimiento", component: Mantenimiento, meta: { requiresAuth: true } },
+      { path: "/maquinas", component: Maquinas, meta: { requiresAuth: true } },
+      { path: "/pagos", component: Pagos, meta: { requiresAuth: true } },
+      { path: "/planes", component: Planes, meta: { requiresAuth: true } },
+      { path: "/sedes", component: Sedes, meta: { requiresAuth: true } },
+      { path: "/usuarios", component: Usuarios, meta: { requiresAuth: true } },
+      { path: "/ventas", component: Ventas, meta: { requiresAuth: true } },
     ]
   },
 ];
 
-export const router = createRouter({
+const router = createRouter({
   history: createWebHashHistory(),
-  routes,
+  routes
 });
 
-// // Verificación de autenticación
-// router.beforeEach((to, from, next) => {
-//   if (to.matched.some(record => record.meta.requiresAuth)) {
-//     const token = localStorage.getItem('token');
-//     if (!token) {
-//       next({ path: '/' }); // Redirigir al login si no está autenticado
-//     } else {
-//       next(); // Permitir el acceso si está autenticado
-//     }
-//   } else {
-//     next(); // Permitir el acceso si no requiere autenticación
-//   }
-// });
+router.beforeEach((to, from, next) => {
+  const useUsuarios=useUsuariosStore()
+  const userRole = useUsuarios.role;
+
+  if (to.meta.roles && !to.meta.roles.includes(userRole)) {
+    next('/');
+  } else {
+    next();
+  }
+});
+
+export default router;
+

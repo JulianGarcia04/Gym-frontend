@@ -1,12 +1,9 @@
-// src/utils/axiosInstance.js
 import axios from 'axios';
 
-// Crear una instancia de axios
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:4000/api'  // Ajusta la URL base según tu configuración
+  baseURL: 'http://localhost:4000/api'  
 });
 
-// Agregar un interceptor para adjuntar el token a las cabeceras
 axiosInstance.interceptors.request.use(
   config => {
     const token = localStorage.getItem('token');

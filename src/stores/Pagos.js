@@ -1,88 +1,179 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 import { ref } from 'vue';
+import { useUsuariosStore } from "./Usuarios";
 
 export const usePagosStore = defineStore('pagos', () => {
+
+  let loading = ref(false)
+  const useUsuarios=useUsuariosStore()
   const pagos = ref([]);
 
+
+
   const getPagos = async () => {
-    try {
-      const res = await axios.get('http://localhost:4500/api/pagos/listar');
-      pagos.value = res.data;
-      return res.data;
-    } catch (error) {
-      console.error('Error fetching pagos:', error);
-      throw error;
-    }
-  };
+            try {
+                loading.value  = true;
+                console.log(`este es el usuariotoken ${useUsuarios.token}`);
+                console.log(` este es el local ${localStorage.getItem('x-token')}`);
+                const response = await axios.get("api/pagos/listar",{
+                    headers:{
+                                "x-token": localStorage.getItem('x-token'),
+
+                    }
+            });
+               return response;
+            } catch (error) {
+                console.error("NO se pudo obtener la lista de pagos",error);
+                console.log(`${useUsuarios.token} es el token`);
+
+                throw error;
+            }
+            finally {
+                loading.value=false
+        }}
 
   const getPagoID = async (id) => {
     try {
-      const res = await axios.get(`http://localhost:4500/api/pagos/listarid/${id}`);
+      const res = await axios.get(`api/pagos/listarid/${id}`);
       return res;
     } catch (error) {
       console.error("Error fetching pago by ID:", error);
       return error;
     }
   };
+
 const listarActivos = async () => {
   try {
-    const res = await axios.get("http://localhost:4500/api/pagos/listaractivados");
-    return res;
-  } catch (error) {
-    console.error("Error fetching pago:", error);
-    return error;
-  }
-};
+    loading.value  = true;
+    console.log(`este es el usuariotoken ${useUsuarios.token}`);
+    console.log(` este es el local ${localStorage.getItem('x-token')}`);
+    const response = await axios.get("api/pagos/listaractivados",{
+        headers:{
+                    "x-token": localStorage.getItem('x-token'),
+
+        }
+});
+   return response;
+} catch (error) {
+    console.error("NO se pudo obtener la lista de pagos",error);
+    console.log(`${useUsuarios.token} es el token`);
+
+    throw error;
+}
+finally {
+    loading.value=false
+}}
 
 const listarInactivos = async () => {
   try {
-    const res = await axios.get("http://localhost:4500/api/pagos/listardesactivados");
-    return res;
-  } catch (error) {
-    console.error("Error fetching pagos:", error);
-    return error;
-  }
-};
+    loading.value  = true;
+    console.log(`este es el usuariotoken ${useUsuarios.token}`);
+    console.log(` este es el local ${localStorage.getItem('x-token')}`);
+    const response = await axios.get("api/pagos/listardesactivados",{
+        headers:{
+                    "x-token": localStorage.getItem('x-token'),
+
+        }
+});
+   return response;
+} catch (error) {
+    console.error("NO se pudo obtener la lista de pagos",error);
+    console.log(`${useUsuarios.token} es el token`);
+
+    throw error;
+}
+finally {
+    loading.value=false
+}}
 
 const updatePago = async (id, data) => {
   try {
-    const res = await axios.put(`http://localhost:4500/api/pagos/modificar/${id}`, data);
-    return res;
+    loading.value = true;
+    console.log(localStorage.getItem('x-token'));
+    const r = await axios.put(`api/pagos/modificar/${id}`, data, {
+      headers: {
+                "x-token": localStorage.getItem('x-token'),
+
+      }
+    });
+    console.log(r);
+    return r;
   } catch (error) {
-    console.error("Error updating pagos:", error);
+    loading.value = false;
+    console.log(error);
     return error;
+  } finally {
+    loading.value = false;
   }
 };
 
 const addPago = async (data) => {
   try {
-    const res = await axios.post("http://localhost:4500/api/pagos/escribir", data);
-    return res;
-  } catch (error) {
-    console.error("Error adding pago:", error);
+    loading.value =true
+    console.log(localStorage.getItem('x-token'));
+
+    const r = await axios.post("api/pagos/escribir", data,{
+        headers:{
+                    "x-token": localStorage.getItem('x-token'),
+
+        }
+    })
+    console.log(r);
+    return r
+} catch (error) {
+    loading.value =true
+    console.log(error);
     return error;
-  }
-};
+}finally{
+    loading.value = false
+}
+}
 
 const activatePago = async (id) => {
   try {
-    const res = await axios.put(`http://localhost:4500/api/pagos/activar/activos/${id}`);
-    return res;
-  } catch (error) {
-    console.error("Error activating pago:", error);
+    loading.value =true
+    console.log(localStorage.getItem('x-token'));
+    const r = await axios.put(`api/pagos/activar/activos/${id}`, {},{
+        headers:{
+                    "x-token": localStorage.getItem('x-token'),
+
+        }
+    })
+    console.log(r);
+    return r
+} catch (error) {
+    loading.value =true
+    console.log(error);
     return error;
-  }
-};
+}finally{
+    loading.value = false
+}
+}
 
 const desactivatePago = async (id) => {
   try {
-    const res = await axios.put(`http://localhost:4500/api/pagos/desactivar/desactivados/${id}`);
-    return res;
-  } catch (error) {
-    console.error("Error deactivating pago:", error);
+    loading.value =true
+    console.log(localStorage.getItem('x-token'));
+    const r = await axios.put(`api/pagos/desactivar/desactivados/${id}`, {},{
+        headers:{
+                    "x-token": localStorage.getItem('x-token'),
+
+        }
+    })
+    console.log(r);
+    return r
+} catch (error) {
+    loading.value =true
+    console.log(error);
     return error;
-  }
-};
-return {  getPagos,getPagoID, listarActivos, listarInactivos,updatePago,addPago,activatePago,desactivatePago };
-});
+}finally{
+    loading.value = false
+}
+}
+return {  getPagos,getPagoID, listarActivos, listarInactivos,updatePago,addPago,activatePago,desactivatePago, pagos, loading, 
+  useUsuarios };
+},
+{persist: true}
+
+);

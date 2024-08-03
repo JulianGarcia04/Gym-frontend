@@ -3,24 +3,37 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 import { ref } from "vue";
+import { useUsuariosStore } from "./Usuarios";
 
 
 export const useSedesStore = defineStore("sedes", () => {
-  let sedes = ref(null)
+
+  let loading = ref(false)
+  const useUsuarios=useUsuariosStore()
+  let sedes =ref([])
+  
   const getSedes = async () => {
     try {
-      const res = await axios.get("http://localhost:4500/api/sedes/listar");
-      sedes.value = res.data.sede
-      return res;
+      loading.value  = true;
+      console.log(`este es el usuariotoken ${useUsuarios.token}`);
+      console.log(` este es el local ${localStorage.getItem('x-token')}`);
+      const res = await axios.get("api/sedes/listar",{
+        headers:{
+          "x-token": localStorage.getItem('x-token'),
+        }
+});
+   return res;
+;
     } catch (error) {
       console.error("Error fetching sedes:", error);
       return error;
-    }
+    }            finally {
+      loading.value=false
+}
   };
-
   const getSedeID = async (id) => {
     try {
-      const res = await axios.get(`http://localhost:4500/api/sedes/listarid/${id}`);
+      const res = await axios.get(`api/sedes/listarid/${id}`);
       return res;
     } catch (error) {
       console.error("Error fetching usuario by ID:", error);
@@ -30,63 +43,126 @@ export const useSedesStore = defineStore("sedes", () => {
 
   const listaractivos = async () => {
     try {
-      const res = await axios.get("http://localhost:4500/api/sedes/listaractivados");
-      return res;
+      loading.value = true;
+      console.log(localStorage.getItem('x-token'));
+      const res = await axios.get("api/sedes/listaractivados", {
+        headers: {
+                  "x-token": localStorage.getItem('x-token'),
+
+        },
+      }); return res;
     } catch (error) {
       console.error("Error fetching usuarios:", error);
       return error;
+    }finally {
+      loading.value = false;
     }
   };
   const listarInactivos = async () => {
     try {
-      const res = await axios.get("http://localhost:4500/api/sedes/listardesactivados");
-      return res;
+      loading.value = true;
+      console.log(localStorage.getItem('x-token'));
+      const res = await axios.get("api/sedes/listardesactivados", {
+        headers: {
+                  "x-token": localStorage.getItem('x-token'),
+
+        },
+      });return res;
     } catch (error) {
       console.error("Error fetching usuarios:", error);
       return error;
+    } finally {
+      loading.value = false;
     }
   };
 
   const updateSede = async (id, data) => {
     try {
-      const res = await axios.put(`http://localhost:4500/api/sedes/modificar/${id}`, data);
-      return res;
+      loading.value = true;
+      console.log(localStorage.getItem('x-token'));
+      if (!id) {
+        throw new Error("ID no definido");
+      }
+      const res = await axios.put(`api/sedes/modificar/${id}`, data, {
+        headers: {
+                  "x-token": localStorage.getItem('x-token'),
+        }
+      }); return res;
     } catch (error) {
+      loading.value = false;
       console.error("Error updating sede:", error);
       return error;
+    }finally {
+      loading.value = false;
     }
   };
 
   const addSede = async (data) => {
+    const loading = ref(true);
+    console.log(localStorage.getItem('x-token'));
     try {
-      const res = await axios.post("http://localhost:4500/api/sedes/escribir", data);
-      return res;
+      const response = await axios.post("api/sedes/escribir", data, {
+        headers: {
+                  "x-token": localStorage.getItem('x-token'),
+
+        }
+      });
+      console.log(response);
+      return response;
     } catch (error) {
-      console.error("Error adding sede:", error);
-      return error;
+      console.log(error);
+      throw new Error(error.response ? error.response.data.error : error.message);
+    } finally {
+      loading.value = false;
     }
   };
 
   const activateSede = async (id) => {
     try {
-      const res = await axios.put(`http://localhost:4500/api/sedes/activar/activos/${id}`);
-      return res;
-    } catch (error) {
-      console.error("Error activating sede:", error);
+      loading.value =true
+      console.log(localStorage.getItem('x-token'));
+      const r = await axios.put(`api/sedes/activar/activos/${id}`, {},{
+          headers:{
+                      "x-token": localStorage.getItem('x-token'),
+
+          }
+      })
+      console.log(r);
+      return r
+  } catch (error) {
+      loading.value =true
+      console.log(error);
       return error;
-    }
-  };
+  }finally{
+      loading.value = false
+  }
+}
 
   const deactivateSede = async (id) => {
     try {
-      const res = await axios.put(`http://localhost:4500/api/sedes/desactivar/desactivados/${id}`);
-      return res;
-    } catch (error) {
-      console.error("Error deactivating sede:", error);
-      return error;
-    }
-  };
+      loading.value =true
+      console.log(localStorage.getItem('x-token'));
+      const r = await axios.put(`api/sedes/desactivar/desactivados/${id}`, {},{
+          headers:{
+                      "x-token": localStorage.getItem('x-token'),
 
-  return { getSedes,getSedeID,listaractivos,listarInactivos, updateSede, addSede, activateSede, deactivateSede, sedes };
-});
+          }
+      })
+      console.log(r);
+      return r
+  } catch (error) {
+      loading.value =true
+      console.log(error);
+      return error;
+  }finally{
+      loading.value = false
+  }
+}
+  return { getSedes,getSedeID,listaractivos,listarInactivos, updateSede, addSede, activateSede, deactivateSede, sedes, loading, 
+    useUsuarios };
+},
+
+{persist: true}
+
+);
 
