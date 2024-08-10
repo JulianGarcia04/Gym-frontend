@@ -10,6 +10,7 @@ import '@quasar/extras/material-icons/material-icons.css'
 import 'quasar/src/css/index.sass'
 import axios from "axios";
 import Swal from 'sweetalert2';
+import VueApexCharts from "vue3-apexcharts";
 
 import { useIntervalStore } from './stores/interval.js';
 
@@ -80,6 +81,8 @@ myApp.use(Quasar, {
     },
   },
 });
+
+myApp.use(VueApexCharts)
 
 myApp.use(router);
 myApp.use(pinia);

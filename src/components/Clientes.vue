@@ -216,95 +216,109 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-<q-dialog v-model="seguimientoModalOpen" persistent>
+<q-dialog v-model="seguimientoModalOpen" full-width persistent>
   <q-card >
     <q-card-section >
       <div class="text-h6">{{ selectedCliente?.nombre }}</div>
     </q-card-section>
-    <q-card-section class="modal">
-      <!-- <q-avatar class="foto_cliente" size="150px">
-        <img  :src="selectedCliente?.foto" />
-      </q-avatar> -->
+    <q-card-section>
       <div class="nivel_imc">
         <q-btn class="nivel_imc_bnt" @click="mostarimc">ver foto cliente</q-btn>
         <div v-if="nivelimc">
           <q-btn color="red" @click="cerrarfoto" class="fotocerrar">X</q-btn>
-        <img  :src="selectedCliente?.foto" :alt="fotocliente"/>
-        </div>
-      </div>
-      <q-table
-        v-if="!mostrarFormulario"
-        flat
-        bordered
-        :rows="selectedCliente?.seguimiento || []"
-        :columns="seguimientoColumns"
-        row-key="fecha"
-      >
-        <template v-slot:body-cell-fecha="props">
-          <q-td :props="props">{{ formatDate(props.row.fecha) }}</q-td>
-        </template>
-                <template v-slot:body-cell-imc="props">
-          <q-td :props="props" :style="{ backgroundColor: getIMCStyle(props.row.imc).backgroundColor }">
-            <p class="option-button">{{ props.row.imc }}</p>
-            <span>{{ getIMCStyle(props.row.imc).label }}</span>
-          </q-td>
-        </template>
-                <template v-slot:body-cell-edita="props">
-          <q-td :props="props">
-            <div class="photo-container">
-              <q-btn
-                class="segui-modal-cerrar"
-                @click="editarsegui(props.row)"
-                style="margin-left: auto; margin-right: auto; display: block;"
-              >
-                ✏️
-              </q-btn>
-            </div>
-          </q-td>
-        </template>
-      </q-table>
-      
-      <div class="mostrar_seguimiento" v-if="mostrarFormulario">
-        <h4 class="text-h6">Nuevo Seguimiento</h4>
-        <div class="segui-modal-contenedor">
-          <label for="">Peso
-            <input class="inputsegui" type="number" placeholder="Peso" v-model.number="nuevoSeguimiento.peso" />
-          </label>
-          <label for="">Brazo
-            <input class="inputsegui" type="number" placeholder="Brazo" v-model.number="nuevoSeguimiento.brazo" />
-          </label>
-          <label for="">Altura
-            <input class="inputsegui" type="number" placeholder="Altura (cm)" v-model.number="nuevoSeguimiento.altura" />
-          </label>
-          <label for="">Edad
-            <input class="inputsegui" type="number" placeholder="Edad" v-model.number="nuevoSeguimiento.edad" />
-          </label>
-          <!-- <div class="botones_seguimiento">
-            <q-btn class="agregaedita" @click="guardarSeguimiento">
-            Guardar Seguimiento
-          </q-btn>
-          <q-btn color="primary" @click="toggleFormulario" class="segui-modal-cerrar">
-            Cancelar
-          </q-btn>
-          </div> -->
-
-<div class="botones_seguimiento">
-  <button v-if="botoneditar" class="agregaedita" @click="editaseguimiento" :loading="useClientes.loading" style="margin-left: auto; margin-right: auto; display: block;">
-    Editar
-  </button>
-  <button v-else class="agregaedita" @click="guardarSeguimiento" :loading="useClientes.loading" style="margin-left: auto; margin-right: auto; display: block;">
-    Agregar Seguimiento
-  </button>
-  <!-- <q-btn @click="toggleFormulario" class="segui-modal-cerrar" style="margin-left: auto; margin-right: auto; display: block;">
-    Cancelar
-  </q-btn> -->
-</div>
-
-
-
+          <img  :src="selectedCliente?.foto" :alt="fotocliente"/>
         </div>
       </div>
     </q-card-section>
+    <q-scroll-area class="full-width" style="height: 70vh;">
+      <q-card-section class="modal">
+        <q-table
+          v-if="!mostrarFormulario"
+          flat
+          bordered
+          :rows="selectedCliente?.seguimiento || []"
+          :columns="seguimientoColumns"
+          row-key="fecha"
+        >
+          <template v-slot:body-cell-fecha="props">
+            <q-td :props="props">{{ formatDate(props.row.fecha) }}</q-td>
+          </template>
+                  <template v-slot:body-cell-imc="props">
+            <q-td :props="props" :style="{ backgroundColor: getIMCStyle(props.row.imc).backgroundColor }">
+              <p class="option-button">{{ props.row.imc }}</p>
+              <span>{{ getIMCStyle(props.row.imc).label }}</span>
+            </q-td>
+          </template>
+                  <template v-slot:body-cell-edita="props">
+            <q-td :props="props">
+              <div class="photo-container">
+                <q-btn
+                  class="segui-modal-cerrar"
+                  @click="editarsegui(props.row)"
+                  style="margin-left: auto; margin-right: auto; display: block;"
+                >
+                  ✏️
+                </q-btn>
+              </div>
+            </q-td>
+          </template>
+        </q-table>
+        
+        <div class="mostrar_seguimiento" v-if="mostrarFormulario">
+          <h4 class="text-h6">Nuevo Seguimiento</h4>
+          <div class="segui-modal-contenedor">
+            <label for="">Peso
+              <input class="inputsegui" type="number" placeholder="Peso" v-model.number="nuevoSeguimiento.peso" />
+            </label>
+            <label for="">Brazo
+              <input class="inputsegui" type="number" placeholder="Brazo" v-model.number="nuevoSeguimiento.brazo" />
+            </label>
+            <label for="">Altura
+              <input class="inputsegui" type="number" placeholder="Altura (cm)" v-model.number="nuevoSeguimiento.altura" />
+            </label>
+            <label for="">Edad
+              <input class="inputsegui" type="number" placeholder="Edad" v-model.number="nuevoSeguimiento.edad" />
+            </label>
+            <!-- <div class="botones_seguimiento">
+              <q-btn class="agregaedita" @click="guardarSeguimiento">
+              Guardar Seguimiento
+            </q-btn>
+            <q-btn color="primary" @click="toggleFormulario" class="segui-modal-cerrar">
+              Cancelar
+            </q-btn>
+            </div> -->
+  
+  <div class="botones_seguimiento">
+    <button v-if="botoneditar" class="agregaedita" @click="editaseguimiento" :loading="useClientes.loading" style="margin-left: auto; margin-right: auto; display: block;">
+      Editar
+    </button>
+    <button v-else class="agregaedita" @click="guardarSeguimiento" :loading="useClientes.loading" style="margin-left: auto; margin-right: auto; display: block;">
+      Agregar Seguimiento
+    </button>
+    <!-- <q-btn @click="toggleFormulario" class="segui-modal-cerrar" style="margin-left: auto; margin-right: auto; display: block;">
+      Cancelar
+    </q-btn> -->
+  </div>
+  
+  
+  
+          </div>
+        </div>
+      </q-card-section>
+      <q-card-section>
+        <div class="row justify-between">
+          <apexchart
+            v-for="{options, series} in chartOptions"
+            :key="options.chart.id"
+            width="500"
+            type="line"
+            :options="options"
+            :series="series"
+          >
+          </apexchart>
+        </div>
+      </q-card-section>
+    </q-scroll-area>
     <q-card-actions align="center">
       <q-btn class="cerrar_seguimiento" flat label="Cerrar" @click="closeModal" />
       <q-btn class="agregar_seguimiento" v-if="!mostrarFormulario" @click="toggleFormulario">Agregar Seguimiento</q-btn>
@@ -315,11 +329,10 @@
 </template>
 
 <script setup>
-import { Notify } from "quasar";
 import { ref, onMounted, computed } from "vue";
 import { useClientesStore } from "../stores/Clientes";
 import { usePlanesStore } from "../stores/Planes";
-import { useQuasar } from 'quasar'
+import { useQuasar, date } from 'quasar'
 
 
 const planSeleccionado=ref()
@@ -344,7 +357,60 @@ const form = ref({
 });
 
 let planesTodo = ref([]);
-let nombreCodigo = ref([]);
+
+const chartOptions = computed(() => {
+  return [
+    {
+      options: {
+        chart: {
+          id: "weight-chart",
+        },
+        title: {
+          text: 'Peso',
+          align: 'left'
+        },
+        xaxis: {
+          categories: selectedCliente.value?.seguimiento.map((seg) => {
+            console.log(seg.fecha)
+            return date.formatDate(new Date(seg.fecha), 'DD MMM YYYY')
+          })
+        },
+      },
+      series: [
+        {
+          name: 'series-1',
+          data: selectedCliente.value?.seguimiento.map((seg) => {
+            return seg.peso
+          })
+        }
+      ]
+    },
+    {
+      options: {
+        chart: {
+          id: "arm-chart",
+        },
+        title: {
+          text: 'Brazo',
+          align: 'left'
+        },
+        xaxis: {
+          categories: selectedCliente.value?.seguimiento.map((seg) => {
+            return date.formatDate(new Date(seg.fecha), 'DD MMM YYYY')
+          })
+        },
+      },
+      series: [
+        {
+          name: 'series-1',
+          data: selectedCliente.value?.seguimiento.map((seg) => {
+            return seg.brazo
+          })
+        }
+      ]
+    }
+  ]
+})
 
 const columns = ref([
   { name: "nombre", label: "Nombre", field: "nombre", align: "center" },
