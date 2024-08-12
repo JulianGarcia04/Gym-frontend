@@ -98,6 +98,21 @@
             <div class="campo-formulario">
               <q-input v-model="form.valor" label="Valor" required />
             </div>
+            <div class="campo-formulario">
+              <q-input v-model="form.expirationDate" mask="date" :rules="['date']">
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                      <q-date v-model="form.expirationDate" :options="expirationDateOptions">
+                        <div class="row items-center justify-end">
+                          <q-btn v-close-popup label="Close" color="primary" flat />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+              </q-input>
+            </div>
 <div class="opciones">
   <q-card-actions align="right">
               <q-btn
@@ -124,7 +139,7 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { useInventarioStore } from "../stores/Inventario";
-import { useQuasar } from 'quasar';
+import { date, useQuasar } from 'quasar';
 
 const $q = useQuasar();
 const formatNumber = (number) => {
@@ -152,6 +167,12 @@ const columns = ref([
     field: (row) => formatNumber(row.valor),
     align: "center",
   },
+  {
+    name: "expirationDate",
+    label: "Fecha de vencimiento",
+    field: (row) => date.formatDate(new Date(row.expirationDate), 'YYYY/MM/DD'),
+    align: "center",
+  },
   { name: "editar", label: "Editar", field: "editar", align: "center" },
   { name: "estado", label: "Estado", field: "estado", align: "center" },
   { name: "opciones", label: "Opciones", field: "opciones", align: "center" },
@@ -164,6 +185,7 @@ const form = ref({
   descripcion: "",
   cantidad: "",
   valor: "",
+  expirationDate: date.formatDate(new Date(), 'YYYY/MM/DD')
 });
 
 async function listarInventario(InventarioId = null) {
@@ -194,7 +216,7 @@ async function listarInventario(InventarioId = null) {
 }
 
 function editar(row) {
-  form.value = { ...row };
+  form.value = { ...row, expirationDate: date.formatDate(new Date(row.expirationDate), 'YYYY/MM/DD') };
   esNuevoInventario.value = false;
   isDialogOpen.value = true;
 }
@@ -206,9 +228,14 @@ function abrirDialogoNuevoInventario() {
     descripcion: "",
     cantidad: "",
     valor: "",
+    expirationDate: date.formatDate(new Date(), 'YYYY/MM/DD')
   };
   esNuevoInventario.value = true;
   isDialogOpen.value = true;
+}
+
+function expirationDateOptions(date) {
+  return new Date(date) > new Date()
 }
 
 async function guardarEdicion() {
@@ -219,10 +246,15 @@ async function guardarEdicion() {
       return;
     }
 
+    const mapFormData = {
+      ...form.value,
+      experationDate: new Date(form.value.experationDate)
+    }
+
     if (esNuevoInventario.value) {
-      await useInventario.addInventario(form.value);
+      await useInventario.addInventario(mapFormData);
     } else {
-      await useInventario.updateInventario(form.value._id, form.value);
+      await useInventario.updateInventario(form.value._id, mapFormData);
     }
     listarInventario();
     cerrarDialogo();
@@ -257,6 +289,11 @@ async function validar() {
   if (!form.value.valor || !/^\d+$/.test(form.value.valor)) {
     mostrarMensajeError('El valor debe ser un número');
     verificado = false;
+  }
+
+  if (new Date(form.value.experationDate) <= new Date() ) {
+    mostrarMensajeError('La fecha de vencimiento debe ser mayor a la fecha actual');
+    verificado = false
   }
   return verificado;
 }

@@ -87,7 +87,6 @@ export const useInventarioStore = defineStore("inventario", () => {
   const updateInventario = async (id, data) => {
     try {
       loading.value =true
-      console.log(localStorage.getItem('x-token'));
 
       const r = await axios.put(`api/inventario/modificar/${id}`, data,{
           headers:{
@@ -99,7 +98,7 @@ export const useInventarioStore = defineStore("inventario", () => {
   } catch (error) {
       loading.value =true
       console.log(error);
-      return error;
+      throw error;
   }finally{
       loading.value = false
   }

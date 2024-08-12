@@ -14,8 +14,8 @@ import VueApexCharts from "vue3-apexcharts";
 
 import { useIntervalStore } from './stores/interval.js';
 
-// axios.defaults.baseURL = "http://localhost:4500/";
-axios.defaults.baseURL = "https://proyectogym-i9i3.onrender.com/";
+axios.defaults.baseURL = "http://localhost:4000/";
+// axios.defaults.baseURL = "https://proyectogym-i9i3.onrender.com/";
 
 
 let requestsPending = 0;
