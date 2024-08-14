@@ -53,6 +53,7 @@ const links = [
   { to: '/Sedes', label: 'Sedes', icon: '🏢', roles: ['Administrador'] },
   { to: '/Planes', label: 'Planes', icon: '📝', roles: ['Administrador'] },
   { to: '/Inventario', label: 'Inventario', icon: '📦', roles: ['Administrador'] },
+  { to: '/proveedores', label: 'Proveedores', icon: '🚛', roles: ['Administrador'] },
   { to: '/Maquinas', label: 'Máquinas', icon: '⚙️', roles: ['Administrador'] },
   { to: '/Mantenimiento', label: 'Mantenimientos', icon: '🔧', roles: ['Administrador', 'Recepcionista'] },
   { to: '/Ingresos', label: 'Ingresos', icon: '💰', roles: ['Administrador'] },
@@ -168,14 +169,18 @@ q-toolbar-title {
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { ref, computed, watchEffect } from 'vue';
+
+import { useInventarioStore } from '../stores/Inventario';
 import { useUsuariosStore } from '../stores/Usuarios';
 
 const leftDrawerOpen = ref(false);
 const router = useRouter();
 const { role } = useUsuariosStore();
 const useUsuarios = useUsuariosStore();
+const inventoryStore = useInventarioStore()
+
 
 const links = [
   { to: '/Home', label: 'Home', icon: '🏠', roles: ['Administrador', 'Recepcionista', 'Instructor'] },
@@ -184,6 +189,7 @@ const links = [
   { to: '/Sedes', label: 'Sedes', icon: '🏢', roles: ['Administrador'] },
   { to: '/Planes', label: 'Planes', icon: '📝', roles: ['Administrador'] },
   { to: '/Inventario', label: 'Inventario', icon: '📦', roles: ['Administrador'] },
+  { to: '/proveedores', label: 'Proveedores', icon: '🚛', roles: ['Administrador'] },
   { to: '/Maquinas', label: 'Máquinas', icon: '⚙️', roles: ['Administrador'] },
   { to: '/Mantenimiento', label: 'Mantenimientos', icon: '🔧', roles: ['Administrador', 'Recepcionista'] },
   { to: '/Ingresos', label: 'Ingresos', icon: '💰', roles: ['Administrador'] },
@@ -203,6 +209,16 @@ const logout = () => {
  useUsuarios.logout()
  console.log("cerrando");
     };
+
+watchEffect(async () => {
+  try {
+    const r = await inventoryStore.getInventario();
+  
+    inventoryStore.uploadInventory(r.data.inventario)
+  } catch (error) {
+    console.error("Error fetching Producto:", error);
+  }
+})
 
 </script>
 

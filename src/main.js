@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 import {createPinia} from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import App from './App.vue'
-import { Quasar, Notify} from 'quasar'
+import { Quasar, Notify, Dialog, Loading } from 'quasar'
 import router from "./routes/route.js"
 // Import icon libraries
 import '@quasar/extras/material-icons/material-icons.css'
@@ -70,7 +70,7 @@ pinia.use(piniaPluginPersistedstate);
 const myApp = createApp(App);
 
 myApp.use(Quasar, {
-  plugins: { Notify },
+  plugins: { Notify, Dialog, Loading },
   config: {
     notify: {
       position: 'top',

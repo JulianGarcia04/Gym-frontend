@@ -11,7 +11,11 @@ export const useInventarioStore = defineStore("inventario", () => {
 
   const inventarios = ref([]);
   const loading = ref(false); 
-  let inventario =ref([])
+  const inventario =ref([])
+
+  const uploadInventory = (data) => {
+    inventario.value = data
+  }
 
 
   const getInventario = async () => {
@@ -189,7 +193,8 @@ const putDesactivarInventario = async (id) => {
     inventarios,
     inventario,
     loading, 
-    useUsuarios 
+    useUsuarios,
+    uploadInventory
   };
 }, {
   persist: true

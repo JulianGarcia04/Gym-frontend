@@ -6,6 +6,7 @@ import Login from "../components/login.vue";
 import Ingresos from "../components/Ingresos.vue";
 import Clientes from "../components/Clientes.vue";
 import Inventario from "../components/Inventario.vue";
+import ProvidersPage from "../components/proveedores/IndexPage.vue"
 import Mantenimiento from "../components/Mantenimiento.vue";
 import Maquinas from "../components/Maquinas.vue";
 import Pagos from "../components/Pagos.vue";
@@ -27,6 +28,7 @@ const routes = [
       { path: "/ingresos", component: Ingresos, meta: { requiresAuth: true } },
       { path: "/clientes", component: Clientes, meta: { requiresAuth: true } },
       { path: "/inventario", component: Inventario, meta: { requiresAuth: true } },
+      { path: "/proveedores", component: ProvidersPage, meta: { requiresAuth: true } },
       { path: "/mantenimiento", component: Mantenimiento, meta: { requiresAuth: true } },
       { path: "/maquinas", component: Maquinas, meta: { requiresAuth: true } },
       { path: "/pagos", component: Pagos, meta: { requiresAuth: true } },

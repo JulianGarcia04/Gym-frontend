@@ -73,6 +73,11 @@
             <q-btn @click="editar(props.row)"> 🖋️ </q-btn>
           </q-td>
         </template>
+        <template v-slot:body-cell-providers="props">
+          <q-td :props="props">
+            <q-btn @click="openProvidersDialog(props.row)"> 🚛 </q-btn>
+          </q-td>
+        </template>
       </q-table>
     </div>
 
@@ -133,13 +138,22 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+    <q-dialog v-model="isOpenProvidersDialog">
+      <q-card>
+        <q-card-section>
+          <providers-table :item-id="selectedItem"/>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { useInventarioStore } from "../stores/Inventario";
 import { date, useQuasar } from 'quasar';
+
+import ProvidersTable from './proveedores/ProvidersTable.vue'
 
 const $q = useQuasar();
 const formatNumber = (number) => {
@@ -174,9 +188,13 @@ const columns = ref([
     align: "center",
   },
   { name: "editar", label: "Editar", field: "editar", align: "center" },
+  { name: "providers", label: "Proveedores", field: "providers", align: "center" },
   { name: "estado", label: "Estado", field: "estado", align: "center" },
   { name: "opciones", label: "Opciones", field: "opciones", align: "center" },
 ]);
+
+const isOpenProvidersDialog = ref(false)
+const selectedItem = ref()
 
 const isDialogOpen = ref(false);
 const esNuevoInventario = ref(false);
@@ -188,31 +206,30 @@ const form = ref({
   expirationDate: date.formatDate(new Date(), 'YYYY/MM/DD')
 });
 
-async function listarInventario(InventarioId = null) {
+async function listarInventario(rawInventory) {
   loading.value = true;
   try {
-    let r;
-    if (InventarioId) {
-      r = await useInventario.getInventariosID(InventarioId);
-      if (r && r.data && r.data.inventario) {
-        rows.value = [r.data.inventario];
-      } else {
-        console.error("Producto no encontrado");
-      }
-    } else {
-      r = await useInventario.getInventario();
-      inventarios.value = r.data.inventario;
-      if (r && r.data) {
-        rows.value = r.data.inventario;
-      } else {
-        console.error("Error fetching Producto:", r);
-      }
+
+    if (rawInventory) {
+      inventarios.value = rawInventory;
+      rows.value = rawInventory;
+      return
     }
+
+    const r = await useInventario.getInventario();
+    useInventario.uploadInventory(r.data.inventario)
+    inventarios.value = r.data.inventario;
+    rows.value = r.data.inventario;
   } catch (error) {
     console.error("Error fetching Producto:", error);
   } finally {
     loading.value = false;
   }
+}
+
+function openProvidersDialog (row) {
+  selectedItem.value = row._id
+  isOpenProvidersDialog.value = true;
 }
 
 function editar(row) {
@@ -339,9 +356,13 @@ const filtrados = computed(() => {
 
 function filtrarInventario() {
 }
-onMounted(() => {
-  listarInventario();
-});
+
+watch(useInventario.inventario, (newInventory) => {
+  listarInventario(newInventory ?? []);
+}, {
+  immediate: true,
+  deep: true
+})
 
 async function listar(tipo) {
   switch (tipo) {
